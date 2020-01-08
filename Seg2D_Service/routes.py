@@ -26,5 +26,6 @@ def seg2d():
     # create response_data
     response_data = pack_image_data(images_name, images_seg)
     print("images sended:", images_name)
+    print("==============")
     # send results
     return jsonify(response_data)
