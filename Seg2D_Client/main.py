@@ -17,7 +17,7 @@ image_files_bse = [
 ]
 
 # request url
-REQUEST_URL = "http://localhost:30002/seg2d"
+REQUEST_URL = "http://localhost:8088/seg2d"
 # request header
 REQUEST_HEADER = { "Content-Type": "application/json" }
 
@@ -40,10 +40,10 @@ if __name__ == "__main__":
     base64s_se  = [image_to_base64(image) for image in images_se]
     base64s_bse = [image_to_base64(image) for image in images_bse]
     # create request data
-    request_data = { "images": {} }
+    request_data = { "payload": { "images": {} } }
     for file_path, base64_se, base64_bse in zip(image_files_se, base64s_se, base64s_bse):
         file_name, file_ext = os.path.splitext(os.path.basename(file_path))
-        request_data["images"][file_name] = { "se": base64_se, "bse": base64_bse }
+        request_data["payload"]["images"][file_name] = { "se": base64_se, "bse": base64_bse }
     # send request and get response
     response = requests.post(
         url = REQUEST_URL,
@@ -52,13 +52,15 @@ if __name__ == "__main__":
     )
     # get response
     response_data = response.json()
+    images_seg_base64 = json.loads(response_data["segmentations"])
     # get images segmentation
     images_seg = []
     images_seg_name = []
-    for image_name in response_data["images"]:
-        image_seg = base64_to_image(response_data["images"][image_name]["seg"])
+    for file_path, image_seg_base64 in zip(image_files_se, images_seg_base64):
+        file_name, file_ext = os.path.splitext(os.path.basename(file_path))
+        image_seg = base64_to_image(image_seg_base64)
         images_seg.append(image_seg)
-        images_seg_name.append(image_name)
+        images_seg_name.append(file_name)
     # save images
     for image_name, image_seg in zip(images_seg_name, images_seg):
         image_seg.save("./images/seg/{}_seg.tif".format(image_name))

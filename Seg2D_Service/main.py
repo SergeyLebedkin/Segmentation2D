@@ -8,4 +8,4 @@ if __name__ == "__main__":
     app = Flask(__name__)
     app.register_blueprint(web_server)
     # create and run server
-    serve(app, host = "0.0.0.0", port = 30002)
+    serve(app, host = "0.0.0.0", port = 8088)
