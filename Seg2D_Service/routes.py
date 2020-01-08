@@ -18,14 +18,14 @@ def seg2d():
     request_data = request.get_json()
     # extract image data
     images_name, images_se, images_bse = extract_image_data(request_data["payload"])
-    print("images received:", images_name)
+    print("images received:     ", images_name)
     # create image segmentations
     print("start calculations...", images_name)
     images_seg = calculate_segmentation(images_se, images_bse)
-    print("images calculated:", images_name)
+    print("images calculated:   ", images_name)
     # create response_data
     response_data = pack_image_data(images_name, images_seg)
-    print("images sended:", images_name)
-    print("==============")
+    print("images sended:       ", images_name)
+    print("=====================")
     # send results
     return jsonify(response_data)
